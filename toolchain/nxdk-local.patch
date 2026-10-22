@@ -1,0 +1,39 @@
+diff --git a/lib/xboxrt/vcruntime/rtti.cpp b/lib/xboxrt/vcruntime/rtti.cpp
+index d4dd0dc..17a7a04 100644
+--- a/lib/xboxrt/vcruntime/rtti.cpp
++++ b/lib/xboxrt/vcruntime/rtti.cpp
+@@ -306,7 +306,7 @@ static ptrdiff_t pmd_to_offset (const void *this_ptr, const PMD *pmd);
+  * @param TargetType Intended result of cast
+  * @param isReference true if input is reference, else if input is pointer
+ */
+-extern "C" __cdecl PVOID __RTDynamicCast (PVOID inptr, LONG VfDelta, PVOID SrcType, PVOID TargetType, BOOL isReference) throw (...)
++extern "C" __cdecl PVOID __RTDynamicCast (PVOID inptr, LONG VfDelta, PVOID SrcType, PVOID TargetType, BOOL isReference) noexcept(false)
+ {
+     if (inptr == nullptr) {
+         return nullptr;
+@@ -371,7 +371,7 @@ static ptrdiff_t pmd_to_offset (const void *this_ptr, const PMD *pmd)
+     return offset;
+ }
+ 
+-extern "C" __cdecl PVOID __RTtypeid (PVOID objptr) throw (...)
++extern "C" __cdecl PVOID __RTtypeid (PVOID objptr) noexcept(false)
+ {
+     if (objptr == nullptr) {
+         throw std::bad_typeid();
+diff --git a/tools/cxbe/Xbe.cpp b/tools/cxbe/Xbe.cpp
+index 1ff7b80..5883dad 100644
+--- a/tools/cxbe/Xbe.cpp
++++ b/tools/cxbe/Xbe.cpp
+@@ -380,7 +380,11 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
+                    (characteristics & IMAGE_SCN_CNT_CODE))
+                     m_SectionHeader[v].dwFlags.bExecutable = true;
+ 
+-                m_SectionHeader[v].dwFlags.bPreload = true;
++                const uint08 *section_name = x_Exe->m_SectionHeader[v].m_name;
++                const bool is_vcs_overlay =
++                    section_name[0] == '.' &&
++                    (section_name[1] == 'v' || section_name[1] == 'b');
++                m_SectionHeader[v].dwFlags.bPreload = !is_vcs_overlay;
+                 m_SectionHeader[v].dwVirtualAddr =
+                     x_Exe->m_SectionHeader[v].m_virtual_addr + m_Header.dwPeBaseAddr;
+ 
