@@ -1,0 +1,28 @@
+
+# Game assets — do not upload
+PSP_GAME/
+*.elf
+*.iso
+*.cso
+*.prx
+
+# Build outputs
+*.o
+*.obj
+*.exe
+*.xbe
+bin/
+
+# Generated dependency files
+*.d
+
+# Generated game code — recreate locally
+/generated_overlay_unsectioned/
+/generated_overlay_perunit_sections/
+/generated_overlay/
+/generated_compact/
+
+# Local test executable
+/overlay_unit_test
+
+/generated_unit_*.cpp

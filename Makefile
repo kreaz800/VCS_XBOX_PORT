@@ -1,0 +1,20 @@
+XBE_TITLE = nxdk\ sample\ -\ hello++
+GEN_XISO = $(XBE_TITLE).iso
+SRCS = $(CURDIR)/main.cpp /home/kreaz800/vcs-xbox/src/decoder.cpp $(CURDIR)/guest_memory_xbox.cpp $(CURDIR)/runtime_xbox.cpp $(CURDIR)/nid_registry_xbox.cpp /home/kreaz800/vcs-xbox/profiles/vcs/generated/generated_registry.cpp
+NXDK_DIR ?= $(CURDIR)/../..
+NXDK_CXXFLAGS += -std=c++20
+NXDK_CXXFLAGS += -Oz
+NXDK_CXXFLAGS += -DPSPRECOMP_XBOX
+NXDK_CXX = y
+
+NXDK_CXXFLAGS += -I$(CURDIR)/xbox_include
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/include
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/profiles/vcs/generated
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/profiles/vcs/host
+SRCS += $(wildcard $(CURDIR)/generated_overlay/generated_unit_*.cpp)
+SRCS += $(CURDIR)/vcs_config_xbox.cpp $(CURDIR)/vcs_camera_input_xbox.cpp $(CURDIR)/vcs_vehicle_input_xbox.cpp
+/home/kreaz800/vcs-xbox/profiles/vcs/generated/generated_unit_%.obj: NXDK_CXXFLAGS += -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables
+$(CURDIR)/generated_overlay/generated_unit_%.obj: NXDK_CXXFLAGS += -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables
+include $(NXDK_DIR)/Makefile
+
+SRCS += $(CURDIR)/elf32_xbox.cpp

@@ -1,0 +1,38 @@
+#include <hal/debug.h>
+#include <hal/video.h>
+#include <windows.h>
+
+#include "psprecomp/runtime.hpp"
+
+namespace psprecomp {
+void register_generated_functions(Runtime &runtime);
+}
+
+int main(void)
+{
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+
+    debugPrint("STAGE 1: full VCS overlay XBE entered main()\n");
+    debugPrint("Waiting 5 seconds before Runtime construction...\n");
+    Sleep(5000);
+
+    debugPrint("STAGE 2: constructing 32 MB PSP Runtime...\n");
+
+    psprecomp::Runtime runtime(32u * 1024u * 1024u);
+
+    debugPrint("STAGE 3: Runtime created successfully.\n");
+    debugPrint("Waiting 5 seconds before unit registration...\n");
+    Sleep(5000);
+
+    debugPrint("STAGE 4: registering generated units...\n");
+
+    psprecomp::register_generated_functions(runtime);
+
+    debugPrint("STAGE 5: generated-unit registration returned.\n");
+    debugPrint("Startup probe SUCCESS. Staying alive.\n");
+
+    while (true)
+        Sleep(1000);
+
+    return 0;
+}

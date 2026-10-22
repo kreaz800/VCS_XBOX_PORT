@@ -1,0 +1,41 @@
+XBE_TITLE = GTA\ Vice\ City\ Stories\ Xbox
+
+NXDK_CXX = y
+
+SRCS = $(CURDIR)/main_vcs_xbox.cpp
+SRCS += $(CURDIR)/elf32_xbox.cpp
+SRCS += /home/kreaz800/vcs-xbox/src/decoder.cpp
+SRCS += $(CURDIR)/guest_memory_xbox.cpp
+SRCS += $(CURDIR)/runtime_xbox.cpp
+SRCS += $(CURDIR)/nid_registry_xbox.cpp
+SRCS += $(CURDIR)/vcs_profile_xbox.cpp
+SRCS += /home/kreaz800/vcs-xbox/profiles/vcs/generated/generated_registry.cpp
+SRCS += $(wildcard $(CURDIR)/generated_overlay/generated_unit_*.cpp)
+
+SRCS += $(CURDIR)/vcs_config_xbox.cpp
+SRCS += $(CURDIR)/vcs_camera_input_xbox.cpp
+SRCS += $(CURDIR)/vcs_vehicle_input_xbox.cpp
+
+NXDK_CXXFLAGS += -std=c++20
+NXDK_CXXFLAGS += -Oz
+NXDK_CXXFLAGS += -DPSPRECOMP_XBOX
+
+NXDK_CXXFLAGS += -I$(CURDIR)/xbox_include
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/include
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/profiles/vcs/generated
+NXDK_CXXFLAGS += -I/home/kreaz800/vcs-xbox/profiles/vcs/host
+
+$(CURDIR)/generated_overlay/generated_unit_%.obj: NXDK_CXXFLAGS += -fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables
+
+
+SRCS += $(CURDIR)/ge_renderer_xbox.cpp
+SRCS += $(CURDIR)/ge_gpu_backend_xbox.cpp
+SRCS += $(CURDIR)/framebuffer_capture_xbox.cpp
+SRCS += $(CURDIR)/vcs_native_fast_paths_xbox.cpp
+SRCS += $(CURDIR)/vcs_project2dfx_xbox.cpp
+SRCS += $(CURDIR)/display_window_xbox.cpp
+
+SRCS += $(CURDIR)/deflate_xbox.cpp
+
+SRCS += $(CURDIR)/audio_output_xbox.cpp
+include $(NXDK_DIR)/Makefile
